@@ -5,4 +5,8 @@ general_packages:
   - libvirt
   - qemu-base
   - podman
-  - gnu-netcat
+  - openbsd-netcat
+  - iptables-nft
+  - dnsmasq
+  - dmidecode
+  - bridge-utils
