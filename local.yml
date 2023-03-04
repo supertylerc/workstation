@@ -1,0 +1,14 @@
+---
+
+- name: Install and Update Packages
+  hosts: localhost
+  tasks:
+    - name: Update Cache
+      community.general.pacman:
+        update_cache: true
+    - name: Update Packages
+      community.general.pacman:
+        upgrade: true
+    - name: Install Desired General Packages
+      community.general.pacman:
+        name: "{{ general_packages }}"
