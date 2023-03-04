@@ -2,6 +2,7 @@
 
 - name: Install and Update Packages
   hosts: localhost
+  become: true
   tasks:
     - name: Update Cache
       community.general.pacman:
