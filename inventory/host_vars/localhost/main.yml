@@ -2,3 +2,7 @@
 
 general_packages:
   - ansible
+  - libvirt
+  - qemu-base
+  - qemu-system-x86_64
+  - podman
