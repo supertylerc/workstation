@@ -5,3 +5,4 @@ general_packages:
   - libvirt
   - qemu-base
   - podman
+  - gnu-netcat
