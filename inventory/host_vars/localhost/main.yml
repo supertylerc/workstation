@@ -10,3 +10,5 @@ general_packages:
   - dnsmasq
   - dmidecode
   - bridge-utils
+  - vim
+  - htop
