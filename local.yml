@@ -48,10 +48,20 @@
   connection: local
   become: false
   tasks:
+    - name: Get list of installed uv tools
+      ansible.builtin.command: uv tool list
+      register: _uv_tools_list
+      changed_when: false
     - name: Install uv packages
       ansible.builtin.command: "uv tool install {{ item.name }}{%if 'from' in item %} --from {{ item.from }}{% endif %}{% if item.force | default(false) %} --force{% endif %}"
       register: _uv_install
       loop: "{{ uv_packages }}"
+      when: >
+        item.force | default(false) or
+        item.name not in _uv_tools_list.stdout
+      changed_when: >
+        item.force | default(false) or
+        _uv_install.rc == 0
     - name: Update uv packages
       ansible.builtin.command: uv tool upgrade --all
       register: _uv_upgrade
