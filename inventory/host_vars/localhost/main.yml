@@ -7,6 +7,7 @@ general_packages:
   - bitwarden-cli
   - claude-code
   - python-uv
+  - cursor-bin
 workstation_user: "{% if 'SUDO_USER' in ansible_env %}{{ ansible_env.SUDO_USER }}{% else %}{{ ansible_user_id }}{% endif %}"
 workstation_ansible_pull_path: "/home/{{ workstation_user }}/.local/bin/ansible-pull"
 workstation_become_password_file: "/home/{{ workstation_user }}/.become_password"
