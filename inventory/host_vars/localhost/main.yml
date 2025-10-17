@@ -1,14 +1,9 @@
 ---
 
 general_packages:
-  - ansible
-  - libvirt
-  - qemu-base
   - podman
   - openbsd-netcat
-  - iptables-nft
-  - dnsmasq
-  - dmidecode
-  - bridge-utils
-  - vim
-  - htop
+  - bitwarden
+  - bitwarden-cli
+  - claude-code
+  - python-uv

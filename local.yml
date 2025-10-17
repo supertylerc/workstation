@@ -2,6 +2,7 @@
 
 - name: Install and Update Packages
   hosts: localhost
+  connection: local
   become: true
   tasks:
     - name: Update Cache
@@ -13,3 +14,8 @@
     - name: Install Desired General Packages
       community.general.pacman:
         name: "{{ general_packages }}"
+    - name: Update uv packages
+      command: uv tool upgrade --all
+      register: _uv_upgrade
+      changed_when: '"Nothing to upgrade" not in _uv_upgrade.stderr'
+
