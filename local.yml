@@ -6,27 +6,29 @@
   become: false
   tasks:
     - name: Create Ansible Pull Service
-      template:
+      ansible.builtin.template:
         src: ansible-pull.service.j2
-        dest: /home/{{ workstation_user }}/.config/systemd/user/ansible-pull.service
-        mode: 0644
-        owner: {{ workstation_user }}
-        group: {{ workstation_user }}
+        dest: "/home/{{ workstation_user }}/.config/systemd/user/ansible-pull.service"
+        mode: "0644"
+        owner: "{{ workstation_user }}"
+        group: "{{ workstation_user }}"
     - name: Create Ansible Pull Timer
-      template:
+      ansible.builtin.template:
         src: ansible-pull.timer.j2
-        dest: /home/{{ workstation_user }}/.config/systemd/user/ansible-timer.service
-        mode: 0644
-        owner: {{ workstation_user }}
-        group: {{ workstation_user }}
+        dest: "/home/{{ workstation_user }}/.config/systemd/user/ansible-pull.timer"
+        mode: "0644"
+        owner: "{{ workstation_user }}"
+        group: "{{ workstation_user }}"
     - name: Reload daemon
       ansible.builtin.systemd_service:
         daemon_reload: true
+        scope: user
     - name: Enable Ansible Pull Timer
       ansible.builtin.systemd_service:
         name: ansible-pull.timer
         state: started
         enabled: true
+        scope: user
 - name: Install and Update Packages
   hosts: localhost
   connection: local
@@ -42,7 +44,6 @@
       community.general.pacman:
         name: "{{ general_packages }}"
     - name: Update uv packages
-      command: uv tool upgrade --all
+      ansible.builtin.command: uv tool upgrade --all
       register: _uv_upgrade
       changed_when: '"Nothing to upgrade" not in _uv_upgrade.stderr'
-

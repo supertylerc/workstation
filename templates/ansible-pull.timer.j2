@@ -3,7 +3,7 @@ Description=Starts ansible-pull to get common server configuration
 Requires=ansible-pull.service
 
 [Timer]
-Unit=ansiblePull.service
+Unit=ansible-pull.service
 OnCalendar={{ workstation_reconcile_timer }}
 
 [Install]
