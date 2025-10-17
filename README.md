@@ -33,6 +33,16 @@ or every 10 minutes, by default.  This means that every 10 minutes, the entire p
 In order to leverage this feature, you either need passwordless `sudo` or you need to write your `sudo` password to
 `workstation_become_password_file`, which is `$HOME/.become_password` by default.
 
+## Config Files
+
+This repository does not currently perform configuration.  It is expected that you have a separate dotfiles repository
+and management solution.  For me, that is GNU stow.
+
+If you find yourself needing secrets in environment variables, then the pattern that I leverage with GNU stow is to use
+a passowrd manager's CLI to read the secret and load it into the varaible.  This introduces some delays when spawning a
+new shell, so you may want to separate this out into a file that does not get read when spawning a shell and is instead
+a manual action to source when necessary.
+
 ## Security
 
 Critically, this repository expects to be able to be run non-interactively.  Because it also requires elevated permissions,
