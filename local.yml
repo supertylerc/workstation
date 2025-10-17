@@ -1,5 +1,32 @@
 ---
 
+- name: Create Systemd Service + Timer in User Scope.
+  hosts: localhost
+  connection: local
+  become: false
+  tasks:
+    - name: Create Ansible Pull Service
+      template:
+        src: ansible-pull.service.j2
+        dest: /home/{{ workstation_user }}/.config/systemd/user/ansible-pull.service
+        mode: 0644
+        owner: {{ workstation_user }}
+        group: {{ workstation_user }}
+    - name: Create Ansible Pull Timer
+      template:
+        src: ansible-pull.timer.j2
+        dest: /home/{{ workstation_user }}/.config/systemd/user/ansible-timer.service
+        mode: 0644
+        owner: {{ workstation_user }}
+        group: {{ workstation_user }}
+    - name: Reload daemon
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+    - name: Enable Ansible Pull Timer
+      ansible.builtin.systemd_service:
+        name: ansible-pull.timer
+        state: started
+        enabled: true
 - name: Install and Update Packages
   hosts: localhost
   connection: local

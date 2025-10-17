@@ -1,0 +1,10 @@
+[Unit]
+Description=Runs ansible-pull
+Wants=ansible-pull.timer
+
+[Service]
+Type=oneshot
+ExecStart={{ workstation_ansible_pull_path }} -U https://github.com/{{ workstation_git_user }}/{{ workstation_git_repo }}.git --become-password-file {{ workstation_become_password_file }}
+
+[Install]
+WantedBy=multi-user.target
