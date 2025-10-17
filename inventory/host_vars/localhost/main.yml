@@ -14,4 +14,6 @@ workstation_become_password_file: "/home/{{ workstation_user }}/.become_password
 workstation_git_user: "{{ workstation_user }}"
 workstation_git_repo: workstation
 workstation_reconcile_timer: "*:0/10:00"
+uv_packages:
+  - {name: specify-cli, from: "git+https://github.com/github/spec-kit.git", force: true}
 

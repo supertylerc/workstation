@@ -43,6 +43,15 @@
     - name: Install Desired General Packages
       community.general.pacman:
         name: "{{ general_packages }}"
+- name: Install and Update uv Packages
+  hosts: localhost
+  connection: local
+  become: false
+  tasks:
+    - name: Install uv packages
+      ansible.builtin.command: "uv tool install {{ item.name }}{%if 'from' in item %} --from {{ item.from }}{% endif %}{% if item.force | default(false) %} --force{% endif %}"
+      register: _uv_install
+      loop: "{{ uv_packages }}"
     - name: Update uv packages
       ansible.builtin.command: uv tool upgrade --all
       register: _uv_upgrade
