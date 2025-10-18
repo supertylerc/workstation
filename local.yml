@@ -76,3 +76,15 @@
       ansible.builtin.command: uv tool upgrade --all
       register: _uv_upgrade
       changed_when: '"Nothing to upgrade" not in _uv_upgrade.stderr'
+- name: Install and Update Go Binaries/Tools Using `go install`
+  hosts: localhost
+  connection: local
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Install go packages
+      ansible.builtin.command: "go install {{ item.name }}"
+      register: _go_install
+      loop: "{{ go_packages }}"
+      changed_when: >
+        _go_install.stdout != ""

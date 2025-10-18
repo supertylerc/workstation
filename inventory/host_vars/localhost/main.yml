@@ -1,5 +1,12 @@
 ---
 
+workstation_user: "{% if 'SUDO_USER' in ansible_env %}{{ ansible_env.SUDO_USER }}{% else %}{{ ansible_user_id }}{% endif %}"
+workstation_ansible_pull_path: "/home/{{ workstation_user }}/.local/bin/ansible-pull"
+workstation_become_password_file: "/home/{{ workstation_user }}/.become_password"
+workstation_git_user: "{{ workstation_user }}"
+workstation_git_repo: workstation
+workstation_reconcile_timer: "*:0/10:00"
+
 general_packages:
   - podman
   - openbsd-netcat
@@ -10,12 +17,10 @@ general_packages:
   - cursor-bin
   - go
   - golangci-lint
-workstation_user: "{% if 'SUDO_USER' in ansible_env %}{{ ansible_env.SUDO_USER }}{% else %}{{ ansible_user_id }}{% endif %}"
-workstation_ansible_pull_path: "/home/{{ workstation_user }}/.local/bin/ansible-pull"
-workstation_become_password_file: "/home/{{ workstation_user }}/.become_password"
-workstation_git_user: "{{ workstation_user }}"
-workstation_git_repo: workstation
-workstation_reconcile_timer: "*:0/10:00"
+
+go_packages: 
+  - {name: "github.com/control-theory/gonzo/cmd/gonzo@latest"}
+
 uv_packages:
   - {name: specify-cli, from: "git+https://github.com/github/spec-kit.git", force: true}
 
