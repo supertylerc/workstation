@@ -17,6 +17,7 @@ general_packages:
   - cursor-bin
   - go
   - golangci-lint
+  - npm
 
 go_packages: 
   - {name: "github.com/control-theory/gonzo/cmd/gonzo@latest"}
