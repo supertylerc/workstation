@@ -83,7 +83,7 @@
   gather_facts: false
   tasks:
     - name: Install go packages
-      ansible.builtin.command: "go install {{ item.name }}"
+      ansible.builtin.command: "go install {% if 'tags' in item %}-tags '{{ item.tags }}' {% endif %}{{ item.name }}"
       register: _go_install
       loop: "{{ go_packages }}"
       changed_when: >

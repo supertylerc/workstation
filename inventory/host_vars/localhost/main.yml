@@ -22,7 +22,7 @@ general_packages:
 
 go_packages: 
   - {name: "github.com/control-theory/gonzo/cmd/gonzo@latest"}
-  - {name: "github.com/golang-migrate/migrate/v4/cmd/migrate@latest"}
+  - {name: "github.com/golang-migrate/migrate/v4/cmd/migrate@latest", "tags": "postgres"}
 
 uv_packages:
   - {name: specify-cli, from: "git+https://github.com/github/spec-kit.git", force: true}
