@@ -18,6 +18,7 @@ general_packages:
   - go
   - golangci-lint
   - npm
+  - pnpm
 
 go_packages: 
   - {name: "github.com/control-theory/gonzo/cmd/gonzo@latest"}
