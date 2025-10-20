@@ -108,4 +108,34 @@
         mode: "0644"
         owner: "{{ workstation_user }}"
         group: "{{ workstation_user }}"
-
+- name: Clone Repositories
+  hosts: localhost
+  connection: local
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Get Necessary Facts Only
+      ansible.builtin.setup:
+        gather_subset:
+          - "!all"
+          - "!min"
+          - "env"
+          - "user_id"
+    - name: Create parent directories for repositories
+      file:
+        path: "{{ repos_base_path }}/{{ item.remote | default(repos_default_remote) }}/{{ item.name | dirname }}"
+        state: directory
+        mode: '0755'
+        owner: "{{ workstation_user }}"
+        group: "{{ workstation_user }}"
+      loop: "{{ repos }}"
+      when: item.name is defined
+    - name: Clone repositories
+      ansible.builtin.git:
+        repo: "https://{{ item.remote | default(repos_default_remote) }}/{{ item.name }}.git"
+        dest: "{{ repos_base_path }}/{{ item.remote | default(repos_default_remote) }}/{{ item.name }}"
+        clone: yes
+        update: yes
+        accept_hostkey: yes
+      loop: "{{ repos }}"
+      when: item.name is defined

@@ -32,3 +32,8 @@ bashrc:
     - "$HOME/go/bin"
     - "$PATH"
   exports: []
+
+repos_base_path: "/home/{{ workstation_user }}/code"
+repos_default_remote: github.com
+repos:
+  - {name: OpenBAS-Platform/docker}
