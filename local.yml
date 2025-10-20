@@ -88,3 +88,24 @@
       loop: "{{ go_packages }}"
       changed_when: >
         _go_install.stdout != ""
+- name: Create .bashrc
+  hosts: localhost
+  connection: local
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Get Necessary Facts Only
+      ansible.builtin.setup:
+        gather_subset:
+          - "!all"
+          - "!min"
+          - "env"
+          - "user_id"
+    - name: Create bashrc
+      ansible.builtin.template:
+        src: bashrc.j2
+        dest: "/home/{{ workstation_user }}/.bashrc"
+        mode: "0644"
+        owner: "{{ workstation_user }}"
+        group: "{{ workstation_user }}"
+

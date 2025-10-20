@@ -27,3 +27,8 @@ go_packages:
 uv_packages:
   - {name: specify-cli, from: "git+https://github.com/github/spec-kit.git", force: true}
 
+bashrc:
+  paths:
+    - "$HOME/go/bin"
+    - "$PATH"
+  exports: []
