@@ -56,7 +56,7 @@ This repository does not currently perform configuration.  It is expected that y
 and management solution.  For me, that is GNU stow.
 
 If you find yourself needing secrets in environment variables, then the pattern that I leverage with GNU stow is to use
-a passowrd manager's CLI to read the secret and load it into the varaible.  This introduces some delays when spawning a
+a password manager's CLI to read the secret and load it into the varaible.  This introduces some delays when spawning a
 new shell, so you may want to separate this out into a file that does not get read when spawning a shell and is instead
 a manual action to source when necessary.
 

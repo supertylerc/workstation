@@ -16,9 +16,3 @@ export PATH="{{ bashrc.paths | join(':') }}"
 {% for e in bashrc.exports %}
 export {{ e.name }}="{{ e.value }}"
 {% endfor %}
-
-export PNPM_HOME="/home/supertylerc/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac

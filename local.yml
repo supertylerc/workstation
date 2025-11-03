@@ -176,7 +176,7 @@
           - "env"
           - "user_id"
     - name: Create parent directories for repositories
-      file:
+      ansible.builtin.file:
         path: "{{ repos_base_path }}/{{ item.remote | default(repos_default_remote) }}/{{ item.name | dirname }}"
         state: directory
         mode: '0755'
