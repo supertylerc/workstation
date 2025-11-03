@@ -1,4 +1,20 @@
 ---
+- name: Detect OS Distribution
+  hosts: localhost
+  connection: local
+  become: false
+  gather_facts: true
+  tasks:
+    - name: Fail if unsupported distribution
+      ansible.builtin.fail:
+        msg: "Unsupported distribution: {{ ansible_distribution }}. Only Arch Linux and Fedora are supported."
+      when: ansible_distribution not in ['Archlinux', 'Fedora']
+    - name: Set distribution-specific variables
+      ansible.builtin.set_fact:
+        os_family: "{{ 'arch' if ansible_distribution == 'Archlinux' else 'fedora' }}"
+        package_manager: "{{ 'pacman' if ansible_distribution == 'Archlinux' else 'dnf' }}"
+        use_omarchy: "{{ ansible_distribution == 'Archlinux' }}"
+        pnpm_packages: "{{ (pnpm_packages_common | default([])) + (pnpm_packages_arch if ansible_distribution == 'Archlinux' else pnpm_packages_fedora | default([])) }}"
 
 - name: Create Systemd Service + Timer in User Scope.
   hosts: localhost
@@ -13,6 +29,13 @@
           - "!min"
           - "env"
           - "user_id"
+    - name: Create systemd user directory
+      ansible.builtin.file:
+        path: "/home/{{ workstation_user }}/.config/systemd/user"
+        state: directory
+        mode: "0755"
+        owner: "{{ workstation_user }}"
+        group: "{{ workstation_user }}"
     - name: Create Ansible Pull Service
       ansible.builtin.template:
         src: ansible-pull.service.j2
@@ -43,15 +66,31 @@
   become: true
   gather_facts: false
   tasks:
-    - name: Update Cache
-      community.general.pacman:
-        update_cache: true
-    - name: Update Packages
-      community.general.pacman:
-        upgrade: true
-    - name: Install Desired General Packages
-      community.general.pacman:
-        name: "{{ general_packages }}"
+    - block:
+        - name: Update Cache
+          community.general.pacman:
+            update_cache: true
+        - name: Update Packages
+          community.general.pacman:
+            upgrade: true
+        - name: Install Desired General Packages
+          community.general.pacman:
+            name: "{{ general_packages_arch }}"
+      when: os_family == 'arch'
+      name: Arch Linux Package Management
+
+    - block:
+        - name: Update Packages
+          ansible.builtin.dnf:
+            name: "*"
+            state: latest
+            update_cache: true
+        - name: Install Desired General Packages
+          ansible.builtin.dnf:
+            name: "{{ general_packages_fedora }}"
+            state: present
+      when: os_family == 'fedora'
+      name: Fedora Package Management
 - name: Install and Update uv Packages
   hosts: localhost
   connection: local
@@ -88,6 +127,21 @@
       loop: "{{ go_packages }}"
       changed_when: >
         _go_install.stdout != ""
+- name: Install and Update pnpm Packages
+  hosts: localhost
+  connection: local
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Install pnpm packages
+      community.general.pnpm:
+        name: "{{ item.name }}"
+        global: true
+        state: latest
+      register: _pnpm_install
+      loop: "{{ pnpm_packages | default([]) }}"
+      when: pnpm_packages | default([]) | length > 0
+      changed_when: _pnpm_install.changed
 - name: Create .bashrc
   hosts: localhost
   connection: local

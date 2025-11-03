@@ -7,7 +7,8 @@ workstation_git_user: "{{ workstation_user }}"
 workstation_git_repo: workstation
 workstation_reconcile_timer: "*:0/10:00"
 
-general_packages:
+# Arch Linux packages
+general_packages_arch:
   - podman
   - openbsd-netcat
   - bitwarden
@@ -20,6 +21,23 @@ general_packages:
   - npm
   - pnpm
 
+# Fedora packages
+# Note: Some packages may need manual installation or different sources:
+# - cursor-bin: Not in Fedora repos, may need manual install or use flatpak
+# - claude-code: Installed via pnpm on Fedora (see pnpm_packages_fedora below)
+# - golangci-lint: Available via go install or manual install
+general_packages_fedora:
+  - podman
+  - netcat
+  #- bitwarden
+  #- bitwarden-cli
+  - golang
+  - nodejs-npm
+  - pnpm
+  - ripgrep
+  - git
+  - golangci-lint
+
 go_packages: 
   - {name: "github.com/control-theory/gonzo/cmd/gonzo@latest"}
   - {name: "github.com/golang-migrate/migrate/v4/cmd/migrate@latest", "tags": "postgres"}
@@ -27,11 +45,21 @@ go_packages:
 uv_packages:
   - {name: specify-cli, from: "git+https://github.com/github/spec-kit.git", force: true}
 
+# pnpm packages
+# Common packages installed on both Arch and Fedora
+pnpm_packages_common: []
+# Distribution-specific packages
+pnpm_packages_arch: []
+pnpm_packages_fedora:
+  - {name: "@anthropic-ai/claude-code"}
+
 bashrc:
   paths:
     - "$HOME/go/bin"
+    - "$PNPM_HOME"
     - "$PATH"
-  exports: []
+  exports:
+    - {name: PNPM_HOME, value: "$HOME/.local/share/pnpm"}
 
 repos_base_path: "/home/{{ workstation_user }}/code"
 repos_default_remote: github.com

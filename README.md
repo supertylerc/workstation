@@ -1,15 +1,32 @@
 # workstation
 
-For Arch, specifically Omarchy.  Assumes a from-scratch install.  Modify host config via [inventory/host_vars/localhost/main.yml](inventory/host_vars/localhost/main.yml)
+Ansible configuration for managing a Linux workstation. Currently supports:
+- **Arch Linux** (specifically Omarchy, but should work with standard Arch)
+- **Fedora Linux**
+
+Assumes a from-scratch install. Modify host config via [inventory/host_vars/localhost/main.yml](inventory/host_vars/localhost/main.yml)
 as necessary.
 
 ## Setup
 
-Install Ansible.  For this, recommend using `uv`.  Below are the commands, but they are also in [./bootstrap.sh](./bootstrap.sh),
-so you could just run that script instead.
+Install Ansible. For this, recommend using `uv`. The bootstrap script ([./bootstrap.sh](./bootstrap.sh))
+handles distribution-specific installation automatically:
 
+**Arch Linux:**
 ```bash
+./bootstrap.sh
+# Or manually:
 sudo pacman -S python-uv
+uv tool install --force ansible --with-executables-from ansible-core,ansible-lint
+```
+
+**Fedora:**
+```bash
+./bootstrap.sh
+# Or manually:
+sudo dnf install -y python3-pip
+curl -LsSf https://astral.sh/uv/install.sh | sh
+export PATH="$HOME/.cargo/bin:$PATH"
 uv tool install --force ansible --with-executables-from ansible-core,ansible-lint
 ```
 
@@ -63,4 +80,25 @@ multiple roles, with a playbook that you could copy as an example, and then supp
 
 However, I am very lazy, so I'm not following best practices here, because this is mostly for me.
 
-If you also use Arch, then you can fork this repository and modify your variables as you see fit.
+If you use Arch or Fedora, you can fork this repository and modify your variables as you see fit.
+
+## Distribution-Specific Notes
+
+### Package Differences
+
+Some packages are distribution-specific:
+- **Arch Linux**: Uses AUR packages like `cursor-bin`, `claude-code`, `python-uv` from official repos
+- **Fedora**: Some packages like `cursor-bin` and `claude-code` may not be available in default repos and may require manual installation or alternative sources (e.g., Flatpak)
+
+### Package Lists
+
+The playbook uses separate package lists for each distribution:
+- `general_packages_arch`: Packages for Arch Linux
+- `general_packages_fedora`: Packages for Fedora
+
+Modify these in `inventory/host_vars/localhost/main.yml` to customize your package selection.
+
+### Bash Configuration
+
+- **Arch (Omarchy)**: Automatically sources Omarchy's default bash configuration
+- **Fedora**: Uses standard bash configuration without Omarchy-specific settings

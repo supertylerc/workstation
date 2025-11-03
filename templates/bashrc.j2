@@ -1,6 +1,11 @@
+{% if use_omarchy | default(false) %}
 # All the default Omarchy aliases and functions
 # (don't mess with these directly, just overwrite them here!)
 source ~/.local/share/omarchy/default/bash/rc
+{% else %}
+# Distribution-specific bash configuration
+# For Fedora, you can add default configurations here if needed
+{% endif %}
 
 # Add your own exports, aliases, and functions here.
 #
@@ -11,3 +16,9 @@ export PATH="{{ bashrc.paths | join(':') }}"
 {% for e in bashrc.exports %}
 export {{ e.name }}="{{ e.value }}"
 {% endfor %}
+
+export PNPM_HOME="/home/supertylerc/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
